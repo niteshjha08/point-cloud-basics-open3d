@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 ## IMPORT LIBRARIES
 import numpy as np
 import time
@@ -11,19 +12,19 @@ import matplotlib.pyplot as plt
 # VISUALIZE THE POINT CLOUD
 pcd = o3d.io.read_point_cloud('./test_files/KITTI/000000.pcd')
 print(np.asanyarray(pcd.points))
-# o3d.visualization.draw_geometries([pcd])
+o3d.visualization.draw_geometries([pcd])
 
 # VOXEL GRID DOWNSAMPLING
 print(f"Points before downsampling: {len(pcd.points)} ")
 downpcd = pcd.voxel_down_sample(voxel_size = 0.1)
 print(f"Points after downsampling: {len(downpcd.points)}")
-# o3d.visualization.draw_geometries([downpcd])
+o3d.visualization.draw_geometries([downpcd])
 
 # RANSAC
 plane_model, inliers = pcd.segment_plane(distance_threshold = 0.4, ransac_n = 3, num_iterations = 1000)
 plane_cloud = pcd.select_by_index(inliers)
 non_plane_cloud = pcd.select_by_index(inliers, invert = True)
-# o3d.visualization.draw_geometries([non_plane_cloud])
+o3d.visualization.draw_geometries([plane_cloud])
 
 # DBScan CLUSTERING
 with o3d.utility.VerbosityContextManager(
@@ -36,7 +37,7 @@ print(f"point cloud has {max_label + 1} clusters")
 colors = plt.get_cmap("tab20")(labels / (max_label if max_label > 0 else 1))
 colors[labels < 0] = 0
 pcd.colors = o3d.utility.Vector3dVector(colors[:, :3])
-# o3d.visualization.draw_geometries([pcd])
+o3d.visualization.draw_geometries([pcd])
 
 
 # Bounding Boxes
